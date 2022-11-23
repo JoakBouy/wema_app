@@ -94,12 +94,11 @@ def auth_patient():
         print("Login details not recognized")
         
         
-#def patient_session():
-    while 1:
+def patient_session():
         print("")
         print("Patient Menu")
-        print("1: View Prescription")
-        
+        print("1. View Prescription")
+        print("2. Download prescription")
         
 def auth_doctor():
     print("")
@@ -116,13 +115,14 @@ def auth_doctor():
         print("Login details not recognized")
     
     
-#def doctor_session():
-    while 1:
+def doctor_session():
         print("")
-        print("Doctor Menu")
-        print("1: Prescribe medication")
+        print("Doctors Menu")
+        print("1. Prescribe medication")
+        print("2. View prescription")
+        print("3. Logout")
         
-    
+        
 
 def main():
     while 1:
