@@ -1,7 +1,7 @@
-#import mysql.connector as mysql
+import mysql.connector as mysql
 
-#db = mysql.connect(host="localhost",user="root",password="",database="hospital")
-#command_handler = db.cursor(buffered=True)
+db = mysql.connect(host="localhost",user="root",password="",database="hospital")
+command_handler = db.cursor(buffered=True)
 
 def admin_session():
     while 1:
@@ -121,8 +121,24 @@ def doctor_session():
         print("1. Prescribe medication")
         print("2. View prescription")
         print("3. Logout")
-        
-        
+        user_option = input(str("Option : "))
+        if user_option == "1":
+            print("")
+            print("Prescribe new medication")
+            command_handler.execute("SELECT username FROM USERS WHERE privilege = 'patient'")
+            records = command_handler.fetchall()
+            diagnosis = input(str("Patient has been diagnosed with : "))
+            for record in records:
+                record = str(record).replace("'","")
+                record = str(record).replace(",","")
+                record = str(record).replace("(","")
+                record = str(record).replace(")","")
+                #Prescribed | Not prescribed
+                status = input(str("Status for " + str (record) + " P/NP : "))
+                query_vals = str((record),diagnosis,status)
+                command_handler.execute("INSERT INTO prescription (username, diagnosis, status) VALUES(%s,%s,%s)",query_vals)
+                db.commit()
+                print(record + "Marked as")
 
 def main():
     while 1:
@@ -142,5 +158,4 @@ def main():
             auth_admin()
         else:
             print("No valid option was selected")
-
 main()
