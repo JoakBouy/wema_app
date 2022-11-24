@@ -1,17 +1,20 @@
-import mysql.connector as mysql
+#import mysql.connector as mysql
 
-db = mysql.connect(host="localhost",user="root",password="",database="hospital")
-command_handler = db.cursor(buffered=True)
+#db = mysql.connect(host="localhost",user="root",password="",database="hospital")
+#command_handler = db.cursor(buffered=True)
 
 def admin_session():
     while 1:
-        print("")
-        print("Admin Menu")
-        print("1. Register new Patient")
-        print("2. Register new Doctor")
-        print("3. Delete Existing Patient")
-        print("4. Delete Existing Doctor")
-        print("5. Logout")
+        print("********************************************************************")
+        print("*                        ADMINS MENU                               *")
+        print("********************************************************************")        
+        print("*                    1. Register new Patient                       *")
+        print("*                    2. Register new Doctor                        *")
+        print("*                    3. Delete Existing Patient                    *")
+        print("*                    4. Delete Existing Doctor                     *")
+        print("*                    5. Logout                                     *")
+        print("********************************************************************")
+        
 
         user_option = input(str("Option : "))
         if user_option == "1":
@@ -98,12 +101,12 @@ def patient_session():
         print("")
         print("Patient Menu")
         print("1. View Prescription")
-        print("2. Download prescription")
+        
         
 def auth_doctor():
-    print("")
-    print("Doctor Login")
-    print("")
+    print("********************************************************************")
+    print("*                         DOCTOR LOGIN                             *")
+    print("********************************************************************")
     username = input(str("Username : "))
     password = input(str("Password : "))
     if username == "doctor":
@@ -116,16 +119,18 @@ def auth_doctor():
     
     
 def doctor_session():
-        print("")
-        print("Doctors Menu")
-        print("1. Prescribe medication")
-        print("2. View prescription")
-        print("3. Logout")
+        print("********************************************************************")
+        print("*                         DOCTORS MENU                             *")
+        print("********************************************************************")        
+        print("*                     1. Prescribe medication                      *")
+        print("*                     2. View prescription                         *")
+        print("*                     3. Logout                                    *")
+        print("********************************************************************")        
         user_option = input(str("Option : "))
         if user_option == "1":
             print("")
             print("Prescribe new medication")
-            command_handler.execute("SELECT username FROM USERS WHERE privilege = 'patient'")
+            command_handler.execute("SELECT username FROM USERS WHERE privilege = 'patients'")
             records = command_handler.fetchall()
             diagnosis = input(str("Patient has been diagnosed with : "))
             for record in records:
@@ -142,13 +147,17 @@ def doctor_session():
 
 def main():
     while 1:
-        print("")
-        print("Welcome to the WEMA Hospital Management system :) ")
-        print("")
-        print("1. Login as Patient")
-        print("2. Login as Doctor")
-        print("3. Login as Admin")
-
+        print("********************************************************************")
+        print("*                                                                  *")
+        print("*            Welcome to Wema Hospital Management System            *")
+        print("*                                                                  *")
+        print("********************************************************************")
+        print("********************************************************************")        
+        print("*                        1. Login as Patient                       *")
+        print("*                        2. Login as Doctor                        *")
+        print("*                        3. Login as Admin                         *")
+        print("*                        4. Exit                                   *")
+        print("********************************************************************")
         user_option = input(str("Option : "))
         if user_option == "1":
             auth_patient()       
@@ -156,6 +165,8 @@ def main():
             auth_doctor()    
         elif user_option == "3":
             auth_admin()
+        elif user_option == "4":
+            break
         else:
             print("No valid option was selected")
 main()
