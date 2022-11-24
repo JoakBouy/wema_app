@@ -156,8 +156,8 @@ def doctor_session():
                 record = str(record).replace(")","")
                 #Prescribed | Not prescribed
                 status = input(str("Status for " + str (record) + " P/NP : "))
-                query_vals = str((record),diagnosis,status)
-                command_handler.execute("INSERT INTO prescriptions (username, diagnosis, status) VALUES(%s,%s,%s)",query_vals)
+                insert_value = f"INSERT INTO prescriptions (username, diagnosis, status) VALUES({record},{diagnosis},{status})"
+                command_handler.execute(insert_value)
                 db.commit()
                 print(record + "Marked as" + status)
         elif user_option == "2":
