@@ -106,9 +106,8 @@ def patient_session(username):
 
         user_option = input(str("Option : "))
         if user_option == "1":
-            print("Displaying register")
-
-            command_handler.execute("SELECT diagnosis, username, status from PRESCIPTIONS WHERE username = 'username'")
+            print("Displaying prescription")
+            command_handler.execute("SELECT diagnosis, username, status from prescriptions WHERE username = 'username'")
             records = command_handler.fetchall()
             for record in records:
                 print(record)
@@ -124,13 +123,12 @@ def auth_doctor():
     print("********************************************************************")
     username = input(str("Username : "))
     password = input(str("Password : "))
-    if username == "doctor":
-        if password == "password":
-            doctor_session()
-        else:
-            print("Incorrect Username or Password!")
+    query_vals = (username, password)
+    command_handler.execute("SELECT * FROM users1 WHERE username = %s AND password = %s AND privilege = 'doctor'",query_vals)
+    if command_handler.rowcount <= 0:
+        print("Login not recognized")
     else:
-        print("Login details not recognized")
+        doctor_session()
     
     
 def doctor_session():
@@ -156,9 +154,8 @@ def doctor_session():
                 record = str(record).replace(")","")
                 #Prescribed | Not prescribed
                 status = input(str("Status for " + str (record) + " P/NP : "))
-                query_vals = str((record),diagnosis,status)
-                command_handler.execute("INSERT INTO prescriptions (username, diagnosis, status) VALUES(%s,%s,%s)",query_vals)
-                db.commit()
+                insert_value = f"INSERT INTO prescriptions (username, diagnosis, status) VALUES({record},{diagnosis},{status})"
+                command_handler.execute(insert_value)
                 print(record + "Marked as" + status)
         elif user_option == "2":
             print("")
