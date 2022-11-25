@@ -6,7 +6,7 @@ command_handler = db.cursor(buffered=True)
 def admin_session():
     while 1:
         print("********************************************************************")
-        print("*                        ADMINS MENU                               *")
+        print("*                        ADMINS ACCOUNT                            *")
         print("********************************************************************")        
         print("*                    1. Register new Patient                       *")
         print("*                    2. Register new Doctor                        *")
@@ -68,9 +68,9 @@ def admin_session():
 
 
 def auth_admin():
-    print("")
-    print("Admin Login")
-    print("")
+    print("********************************************************************")
+    print("*                         ADMINS LOGIN                             *")
+    print("********************************************************************")
     username = input(str("Username : "))
     password = input(str("Password : "))
     if username == "admin":
@@ -83,9 +83,9 @@ def auth_admin():
         
 
 def auth_patient():
-    print("")
-    print("Patient Login")
-    print("")
+    print("********************************************************************")
+    print("*                         PATIENT LOGIN                           *")
+    print("********************************************************************")
     username = input(str("Username : "))
     password = input(str("Password : "))
     query_vals = (username, password, "patient")
@@ -98,14 +98,16 @@ def auth_patient():
         
 def patient_session(username):
     while 1:
-        print("")
-        print("Patient Menu")
-        print("1. View Vaccination Status")
-        print("2. Logout")
+        print("********************************************************************")
+        print("*                         PATIENTS ACCOUNT                         *")
+        print("********************************************************************")        
+        print("*                   1. View prescription Status                    *")
+        print("*                   2. Logout                                      *")
+        print("********************************************************************")
 
         user_option = input(str("Option : "))
         if user_option == "1":
-            print("Displaying vaccination status")
+            print("Displaying prescription status")
             username = (str(username),)
             command_handler.execute("SELECT date, username, status FROM prescriptions1 WHERE username = %s",username)
             records = command_handler.fetchall()
@@ -134,16 +136,16 @@ def auth_doctor():
 def doctor_session():
     while 1:
         print("********************************************************************")
-        print("*                         DOCTORS MENU                             *")
+        print("*                         DOCTORS ACCOUNT                          *")
         print("********************************************************************")        
-        print("*                     1. Vaccinate                                 *")
-        print("*                     2. View vaccination status                   *")
+        print("*                     1. Prescribe                                 *")
+        print("*                     2. View prescription status                  *")
         print("*                     3. Logout                                    *")
         print("********************************************************************")        
         user_option = input(str("Option : "))
         if user_option == "1":
             print("")
-            print("Log new vaccination")
+            print("Log new prescription")
             command_handler.execute("SELECT username FROM USERS1 WHERE privilege = 'patient'")
             records = command_handler.fetchall()
             date    = input(str("Date : DD/MM/YYYY : "))
@@ -153,18 +155,18 @@ def doctor_session():
                 record = str(record).replace("(","")
                 record = str(record).replace(")","")
 
-            #Vaccinated | Not vaccinated
-            status = input(str("Status for " + str(record) + "Vaccinated / Not Vaccinated : "))
+            #Prescribed | Not prescribed
+            status = input(str("Status for " + str(record) + "P / NP : "))
             query_vals = (str(record),date,status)
             command_handler.execute("INSERT INTO prescriptions1 (username, date, status) VALUES(%s,%s,%s)",query_vals)
             db.commit()
             print(record + " has been marked as " + status)
         elif user_option == "2":
             print("")
-            print("Viewing all patient vaccination status")
+            print("Viewing all patients prescriptions status")
             command_handler.execute("SELECT username, date, status FROM prescriptions1")
             records = command_handler.fetchall()
-            print("Displaying all vaccination status")
+            print("Displaying all prescription status")
             for record in records:
                 print(record)
         elif user_option == "3":
