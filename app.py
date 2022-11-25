@@ -88,26 +88,26 @@ def auth_patient():
     print("")
     username = input(str("Username : "))
     password = input(str("Password : "))
-    if username == "patient":
-        if password == "password":
-            patient_session()
-        else:
-            print("Incorrect Username or Password!")
+    query_vals = (username, password, "patient")
+    command_handler.execute("SELECT username FROM users1 WHERE username = %s AND password = %s AND privilege = %s",query_vals)
+    if command_handler.rowcount <= 0:
+        print("Login not recognized")
     else:
-        print("Login details not recognized")
+        patient_session(username)
         
         
 def patient_session(username):
     while 1:
         print("")
         print("Patient Menu")
-        print("1. View Prescription")
+        print("1. View Vaccination Status")
         print("2. Logout")
 
         user_option = input(str("Option : "))
         if user_option == "1":
-            print("Displaying prescription")
-            command_handler.execute("SELECT diagnosis, username, status from prescriptions WHERE username = 'username'")
+            print("Displaying vaccination status")
+            username = (str(username),)
+            command_handler.execute("SELECT date, username, status FROM prescriptions1 WHERE username = %s",username)
             records = command_handler.fetchall()
             for record in records:
                 print(record)
@@ -136,38 +136,42 @@ def doctor_session():
         print("********************************************************************")
         print("*                         DOCTORS MENU                             *")
         print("********************************************************************")        
-        print("*                     1. Prescribe medication                      *")
-        print("*                     2. View prescription                         *")
+        print("*                     1. Vaccinate                                 *")
+        print("*                     2. View vaccination status                   *")
         print("*                     3. Logout                                    *")
         print("********************************************************************")        
         user_option = input(str("Option : "))
         if user_option == "1":
             print("")
-            print("Prescribe new medication")
+            print("Log new vaccination")
             command_handler.execute("SELECT username FROM USERS1 WHERE privilege = 'patient'")
             records = command_handler.fetchall()
-            diagnosis = input(str("Patient has been diagnosed with : "))
+            date    = input(str("Date : DD/MM/YYYY : "))
             for record in records:
                 record = str(record).replace("'","")
                 record = str(record).replace(",","")
                 record = str(record).replace("(","")
                 record = str(record).replace(")","")
-                #Prescribed | Not prescribed
-                status = input(str("Status for " + str (record) + " P/NP : "))
-                insert_value = f"INSERT INTO prescriptions (username, diagnosis, status) VALUES({record},{diagnosis},{status})"
-                command_handler.execute(insert_value)
-                print(record + "Marked as" + status)
+
+            #Vaccinated | Not vaccinated
+            status = input(str("Status for " + str(record) + "Vaccinated / Not Vaccinated : "))
+            query_vals = (str(record),date,status)
+            command_handler.execute("INSERT INTO prescriptions1 (username, date, status) VALUES(%s,%s,%s)",query_vals)
+            db.commit()
+            print(record + " has been marked as " + status)
         elif user_option == "2":
             print("")
-            print("Viewing prescription")
-            command_handler.execute("SELECT diagnosis, username, status from PRESCIPTIONS")
+            print("Viewing all patient vaccination status")
+            command_handler.execute("SELECT username, date, status FROM prescriptions1")
             records = command_handler.fetchall()
+            print("Displaying all vaccination status")
             for record in records:
                 print(record)
         elif user_option == "3":
             break
         else:
-            print("No valid option selected")
+            print("No valid option was selected")
+
 
 def main():
     while 1:
